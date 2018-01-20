@@ -1,0 +1,211 @@
+<doctype! html>
+<!--Li-fi by w01000001ssim-->
+    <!--1/20/2018-->
+    <html>
+    <head>
+        <style>
+        
+            body{
+                background-color: black;padding: 0;margin: 0;
+            }
+            li{
+                color: white;
+                
+            }
+            textarea{
+                border: none;
+                box-shadow:inset 0 0 1px 1px rgba(128, 128, 128, 0.3);
+                background-color: black;
+                color:rgb(0,255,0);
+                    width:50%;
+                
+                padding: 0;
+                margin: 0;
+                position: absolute;
+                resize: none;
+                padding: 10px;
+                padding-top: 30px;
+                overflow: hidden;
+            }
+            #container{
+                position: absolute;
+                top: 0;left: 0;
+                width: 75%;
+                height: 100%;
+            }
+            #data   {height: 30%;top: 0;left:0}
+            #binary {height: 70%;top: 0;right:0}
+            #b      {height: 70%;bottom: 0;left:0}
+            #s      {height: 30%;bottom: 0;right:0}
+            #tobinary{
+                top: calc(25% - 50px);
+            }
+            #tostring{
+                bottom: calc(25% - 50px);
+                
+            }
+            button{
+               height: 100px;position: absolute;position: absolute;
+                width: 100px;border: none;
+                left: calc(50% - 50px);
+                border-radius: 50px;
+                background-color: rgb(0,255,0);
+                color: white;
+                transition: 0.2s;
+                z-index: 10;
+                display: none;
+            }
+            button:hover{
+                box-shadow: inset 0 0 10px 5px darkrgb(0,255,0);
+            }
+
+            #l1{left: 5%;top:2%;}
+            #l2{left: 55%;top:2%;}
+            #l3{left: 5%;top:32%;}
+            #l4{left: 55%;top:72%;}
+            #l5{left: 15%;top:110px;}
+            #l6{left: 15%;top:240px;}
+            .l{
+                 position: absolute;
+                z-index: 500;
+                color: rgb(0,255,0);
+                font-family: monospace;
+                padding: 0;margin: 0;
+            }
+            #td{
+                color: rgb(0,255,0);
+                height: 50px;
+            }
+            #tr{color: rgb(0,255,0)}
+            #side-info{
+                position: absolute;
+                left: 75%;width:25%;
+                background-color: black;
+                height: 100%;
+                box-shadow:inset 0 0 1px 1px rgba(128, 128, 128, 0.3);
+            }
+        </style>
+        </head>
+    <body>
+        <div id="side-info">
+        
+            
+        <label class="l"  id="l5">&#62;&#62;Receiver:</label>
+        <label class="l"  id="l6">&#62;&#62;Transmitter:</label>
+        
+            <table style="width: 100%; height: 50px; padding: 0; margin: 0;color: rgb(0,255,0)">
+            <tr><td>Transfer time for 1 bit:</td><td><input id="t" onkeyup="document.getElementById('binary').value=stringToBinary(document.getElementById('data').value);"
+            onchange="document.getElementById('binary').value=stringToBinary(document.getElementById('data').value);"
+            type="text" style="text-align: center;background: transparent;color: rgb(0,255,0);border:none;width: 100px" value="10">ms</td></tr>
+            <tr><td>Estimated transfer time:</td><td><input id="l5" type="text" style="text-align: center;background: transparent;color: rgb(0,255,0);border:none;width: 100px" value="0" id="l5">s</td></tr>
+            <tr><td>Data size:</td><td><input id="size" type="text" style="text-align: center;background: transparent;color: rgb(0,255,0);border:none;width: 100px" value="0" >bytes</td></tr>
+                <tr><td>Transfer speed:</td><td><input id="speed" type="text" style="text-align: center;background: transparent;color: rgb(0,255,0);border:none;width: 100px" value="0" >kb/s</td></tr>
+            
+            </table>
+            <textarea id="acode1" style="width: 100%;height: 20%;top:100px;left:0;"></textarea>
+            <textarea id="acode2" style="width: 100%;height: calc(80% - 100px);top:calc(20% + 100px);left:0;"></textarea>
+        </div>
+        <div id="container">
+            <label class="l" id="l1">&#62;&#62;Text input:</label>
+        <label class="l"  id="l2">&#62;&#62;Binary output:</label>
+        <label class="l"  id="l3">&#62;&#62;Binary input:</label>
+        <label class="l"  id="l4">&#62;&#62;Text output:</label>
+        
+        <textarea id="data" onchange="document.getElementById('binary').value=stringToBinary(document.getElementById('data').value);"
+        onkeyup="document.getElementById('binary').value=stringToBinary(document.getElementById('data').value);" ></textarea>
+        <button id="tobinary" onclick="document.getElementById('binary').value=stringToBinary(document.getElementById('data').value);"
+        
+                >Text to Binary</button>
+        <textarea id="binary"></textarea>
+        <br>
+        
+    <textarea id="b" onchange="document.getElementById('s').value=binaryToString(document.getElementById('b').value);"
+                onkeyup="document.getElementById('s').value=binaryToString(document.getElementById('b').value);"></textarea>
+        <button id="tostring" 
+                
+                onclick="document.getElementById('s').value=binaryToString(document.getElementById('b').value);"
+     
+                
+                >Binary to Text</button>
+        <textarea id="s"></textarea>
+        </div>
+    </body>
+    
+    
+    </html>
+    <script>
+    window.addEventListener("load",function(){
+    document.getElementById("acode1").innerHTML=
+`void setup() {Serial.begin(9600);}
+void loop() {delay(100);
+if(analogRead(A0)>50){
+  Serial.print(0);
+  }else{Serial.print(1);}}`;
+        document.getElementById("acode2").innerHTML=
+`void setup() {
+  pinMode(2,OUTPUT);
+  pinMode(3,OUTPUT);
+  digitalWrite(2,1);
+  while (! Serial);
+  Serial.begin(9600);
+  Serial.println("Enter binary data");}
+void loop() {
+  String data = "";
+    char character;
+  while(Serial.available()) {
+      character = Serial.read();
+      data.concat(character);}
+  for(int i=0;i<data.length();i++){
+          if(data[i]=='0'){
+            digitalWrite(3,0);
+             Serial.print(data[i]);}
+          if(data[i]=='1'){
+               digitalWrite(3,1);
+               Serial.print(data[i]);
+              }delay(100);}
+  //digitalWrite(3,random(2));
+  //digitalWrite(3,random(2));delay(10);
+}`;
+        
+    });
+
+        
+        function binaryToString(str) {
+    // Removes the spaces from the binary string
+    str = str.replace(/\s+/g, '');
+    // Pretty (correct) print binary (add a space every 8 characters)
+    str = str.match(/.{1,8}/g).join(" ");
+
+    var newBinary = str.split(" ");
+    var binaryCode = [];
+
+    for (i = 0; i < newBinary.length; i++) {
+        binaryCode.push(String.fromCharCode(parseInt(newBinary[i], 2)));
+    }
+    
+    return binaryCode.join("");
+}
+        
+        function stringToBinary(str, spaceSeparatedOctets) {
+    function zeroPad(num) {
+        return "00000000".slice(String(num).length) + num;
+    }
+
+    binary_data= str.replace(/[\s\S]/g, function(str) {
+        str = zeroPad(str.charCodeAt().toString(2));
+        return !1 == spaceSeparatedOctets ? str : str;
+        
+    });
+        document.getElementById("l5").value=parseFloat((((binary_data.length)*document.getElementById("t").value)/1000).toFixed(3));
+        document.getElementById("size").value=binary_data.length;
+        document.getElementById("speed").value=(1/document.getElementById("t").value).toFixed(2);
+            return binary_data;
+};
+    
+        
+        
+
+        
+        
+    
+    </script>
